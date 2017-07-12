@@ -1,5 +1,14 @@
 const Discord = require('discord.js');
 const config = require('./config.json');
+var web = require('./core/web.js');
+var socket = require('./core/socket.js');
+
+/* Settings & other stuff*/
+_root = __dirname;
+
+web.start();
+socket.start();
+
 bepo = new Discord.Client();
 bepo.login(config.token);
 
@@ -9,7 +18,8 @@ bepo.on('ready', () => {
   console.log('Aye!');
 });
 
-// Create an event listener for messages
+
+
 bepo.on('message', message => {
   // If the message is "ping"
   if (message.content === 'ping') {
@@ -17,5 +27,3 @@ bepo.on('message', message => {
     message.channel.send('pong');
   }
 });
-
-// Log our bot in
