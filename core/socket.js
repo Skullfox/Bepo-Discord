@@ -9,14 +9,17 @@ module.exports = {
     socket.on('connection', function(client){
         console.log('Connection to client established');
 
-        client.on('getServerList', function(){
-          console.warn("getServerList");
-          client.emit('getServerList',{"servers" : maiq.servers,"users" : maiq.users});
-        });
+
 
     });
 
 
   },
 
+  emitStatus : function(obj){
+
+    socket.sockets.emit('talkStatus', obj);
+    console.log("test");
+
+  }
 };

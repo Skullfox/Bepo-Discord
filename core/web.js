@@ -12,7 +12,7 @@ module.exports = {
     })
 
     app.listen(port, function () {
-      console.log('Bepo listening on port ' + port);
+      console.log('Bepo is listening, open http://localhost:4241');
     })
 
   },
