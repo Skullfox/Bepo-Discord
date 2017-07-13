@@ -9,7 +9,11 @@ npm install ytdl-core
 npm install opusscript
 
 ### Start
-node bepo.js
+
+edit rename config.sample to config.json edit token and secret.   
+```javascript
+node bepo.js  
+```
 Open http://localhost:4241/ and enter server id.   
 Or open http://localhost:4241/?serverid=xxx for fast connect.   
 
