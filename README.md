@@ -18,3 +18,6 @@ Commands |  _
 b.invite | connect to voice channel
 b.leave | disconnect from voice channel
 b.play [youtube id] | start a youtube video
+
+### Electron
+Start: ./node_modules/.bin/electron ./electron   
