@@ -3,29 +3,43 @@
   <head>
     <meta charset="utf-8">
     <title>Bepo Overlay</title>
+    <link rel="stylesheet" href="static/foundation.min.css" />
+    <link rel="stylesheet" href="static/app.css" />
   </head>
   <body>
 
+<div id="login">
 
+  <form>
+  <div class="grid-x">
+    <div class="small-9 medium-11 large-11 cell">
+      <input type="number" id="form-serverid" value="2737779261164748811" placeholder="Server id">
+    </div>
+    <div class="small-3 medium-1 large-1 cell">
+      <button type="button" class=" button connect-button">Connect</button>
+    </div>
+  </div>
+</form>
+
+
+</div>
+<div id="app" style="display:none">
+
+
+    <label>
+      <select id="select-channel">
+        <option value="">Select channel</option>
+      </select>
+    </label>
+
+    <div id="chat-container">
+
+    </div>
+</div>
   </body>
 
   <script src="static/socket.io.js"></script>
   <script src="static/jquery.js"></script>
   <script src="static/app.js"></script>
-  <script>
-  var socket = io('http://localhost:4242');
-
-    socket.on('talkStatus', function(obj){
-     console.log(obj);
-   });
-
-  socket.on('connect', function(){
-    console.warn("Bepo connected");
-  });
-  socket.on('event', function(data){
-    //console.log(data);
-  });
-  socket.on('disconnect', function(){});
-  </script>
 
 </html>

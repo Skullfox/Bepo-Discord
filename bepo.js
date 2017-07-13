@@ -7,6 +7,10 @@ var socket = require('./core/socket.js');
 
 /* Settings & other stuff*/
 _root = __dirname;
+_b = require('./core/functions.js');
+beposVoicechannel = null;
+
+
 
 web.start();
 socket.start();
@@ -31,8 +35,68 @@ bepo.on('message', message => {
 });
 
 */
+
 bepo.on('message', message => {
-  if (message.content.startsWith('++play')) {
+
+
+  socket.emit({
+    "event" : "message",
+    "data" : {
+      "channelID" : message.channel.id,
+      "message" : message.content,
+      "userID" : message.author.id,
+      "username" : message.author.username,
+      "createdTimestamp" : message.createdTimestamp / 1000
+    }
+  });
+
+});
+
+bepo.on('message', message => {
+  if (message.content.startsWith('b.invite')) {
+    const voiceChannel = message.member.voiceChannel;
+    if (!voiceChannel) return message.reply(`Please be in a voice channel first!`);
+
+    voiceChannel.join()
+      .then(connnection => {
+        beposVoicechannel = voiceChannel;
+      });
+  }
+});
+
+
+bepo.on('message', message => {
+  if (message.content.startsWith('b.leave')) {
+    const voiceChannel = message.member.voiceChannel;
+    if (!voiceChannel) return message.reply(`Please be in a voice channel first!`);
+    beposVoicechannel.leave();
+  }
+});
+
+/* Play Music */
+bepo.on('message', message => {
+  if (message.content.startsWith('b.play')) {
+    if(beposVoicechannel == null)
+      return message.reply(`Please be in a voice channel first!`);
+
+    const args = message.content.split(/\s+/g).slice(1);
+    var url = "https://www.youtube.com/watch?v=" + args[0];
+
+    beposVoicechannel.join()
+      .then(connnection => {
+
+        const stream = ytdl(url, { filter: 'audioonly' });
+        const dispatcher = connnection.playStream(stream);
+
+      });
+
+
+    console.log(args);
+  }
+});
+
+bepo.on('message', message => {
+  if (message.content.startsWith('b.start')) {
     const voiceChannel = message.member.voiceChannel;
     if (!voiceChannel) return message.reply(`Please be in a voice channel first!`);
     voiceChannel.join()
@@ -65,7 +129,9 @@ bepo.on('message', message => {
 
           console.log( channelUser );
 
-          socket.emitStatus({"user" : {
+          socket.emit({
+            "event" : "talkStatus",
+            "user" : {
             "displayAvatarURL" : user.displayAvatarURL,
             "id" : user.id,
             "username" : user.username

@@ -4,22 +4,33 @@ module.exports = {
 
     var port = 4242;
 
-    socket  = require('socket.io').listen( port );
+    io  = require('socket.io').listen(port, {
+      log : false
+    });
 
-    socket.on('connection', function(client){
-        console.log('Connection to client established');
+    io.sockets.on('connection', function(socket) {
+
+      console.log('Connection to client established');
 
 
+      socket.on('getChannel', function(guildID) {
+        console.log("req channel");
+        var channel = _b.getChannel(guildID);
+        socket.emit("setupChannel", channel);
+
+      });
 
     });
 
 
+
+
+
   },
 
-  emitStatus : function(obj){
-
-    socket.sockets.emit('talkStatus', obj);
-    console.log("test");
+  emit : function(obj){
+    console.log("send socket");
+    io.sockets.emit(obj.event, obj);
 
   }
 };
