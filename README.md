@@ -10,7 +10,8 @@ npm install opusscript
 
 ### Start
 node bepo.js
-Open http://localhost:4241/ and enter server id.
+Open http://localhost:4241/ and enter server id.   
+Or open http://localhost:4241/?serverid=xxx for fast connect.   
 
 Commands |  _
 ------------ | -------------
