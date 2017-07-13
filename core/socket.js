@@ -2,7 +2,7 @@ module.exports = {
 
   start : function() {
 
-    var port = 4242;
+    var port = 4243;
 
     io  = require('socket.io').listen(port, {
       log : false
