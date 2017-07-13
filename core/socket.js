@@ -20,6 +20,13 @@ module.exports = {
 
       });
 
+      socket.on('playMusic', function(obj) {
+        console.log(obj);
+        _b.playMusic(obj.video);
+
+      });
+
+
     });
 
 

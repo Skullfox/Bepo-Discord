@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const config = require('./config.json');
-const ytdl = require('ytdl-core');
+ytdl = require('ytdl-core');
 
 var web = require('./core/web.js');
 var socket = require('./core/socket.js');
@@ -53,7 +53,7 @@ bepo.on('message', message => {
 });
 
 bepo.on('message', message => {
-  if (message.content.startsWith('b.invite')) {
+  if (message.content.startsWith('b.join')) {
     const voiceChannel = message.member.voiceChannel;
     if (!voiceChannel) return message.reply(`Please be in a voice channel first!`);
 
@@ -63,6 +63,14 @@ bepo.on('message', message => {
       });
   }
 });
+
+bepo.on('message', message => {
+  if (message.content.startsWith('b.stop')) {
+    _b.stopMusic();
+  }
+});
+
+
 
 
 bepo.on('message', message => {
@@ -76,22 +84,17 @@ bepo.on('message', message => {
 /* Play Music */
 bepo.on('message', message => {
   if (message.content.startsWith('b.play')) {
+
+
+
     if(beposVoicechannel == null)
       return message.reply(`Please be in a voice channel first!`);
 
     const args = message.content.split(/\s+/g).slice(1);
-    var url = "https://www.youtube.com/watch?v=" + args[0];
 
-    beposVoicechannel.join()
-      .then(connnection => {
+    var video = args[0];
+    _b.playMusic(video);
 
-        const stream = ytdl(url, { filter: 'audioonly' });
-        const dispatcher = connnection.playStream(stream);
-
-      });
-
-
-    console.log(args);
   }
 });
 

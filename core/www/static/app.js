@@ -21,6 +21,16 @@ $( document ).ready(function() {
     socket.emit('getChannel', serverid);
   });
 
+  $( ".youtube-button" ).click(function() {
+    var url = $("#form-video").val();
+    var url = new URL(url);
+    var video = url.searchParams.get("v");
+    console.log(video);
+
+    socket.emit('playMusic', {"video" : video});
+
+  });
+
 
   $( "#select-channel" ).change(function() {
 
