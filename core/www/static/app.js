@@ -59,7 +59,7 @@ $( document ).ready(function() {
     var time = parseInt(data.createdTimestamp * 1000);
     var date = new Date(time);
     var hours = date.getHours();
-    var minutes = date.getMinutes();
+    var minutes = (date.getMinutes()<10?'0':'') + date.getMinutes();
     console.log(hours);
     console.log(minutes);
 

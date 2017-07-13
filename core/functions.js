@@ -10,7 +10,7 @@ module.exports = {
       guild.channels.map(function(c){
 
         if(c.type == "text"){
-          list[c.id] = {
+          list[c.calculatedPosition] = {
             "id" : c.id,
             "name" : c.name
           };
