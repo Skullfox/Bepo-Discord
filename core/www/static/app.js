@@ -1,5 +1,18 @@
 $( document ).ready(function() {
 
+  socket = io('127.0.0.1:4243');
+
+  function start(socket){
+    var url = new URL(window.location.href);
+    var serverid = url.searchParams.get("serverid");
+    if(serverid != null){
+      socket.emit('getChannel', serverid);
+    };
+
+  };
+
+  start(socket);
+
   $( ".connect-button" ).click(function() {
     var serverid = $("#form-serverid").val();
     if(serverid == 0)
@@ -21,7 +34,7 @@ $( document ).ready(function() {
   });
 
 
-  var socket = io('127.0.0.1:4243');
+
 
   socket.on('talkStatus', function(obj){
    console.log(obj);
