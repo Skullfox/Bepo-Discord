@@ -28,7 +28,7 @@ module.exports = {
 
   playMusic : function(video){
     var url = "https://www.youtube.com/watch?v=" + video;
-
+    console.log(url);
     var connnection = bepo.voiceConnections.first();
 
 
@@ -42,7 +42,7 @@ module.exports = {
       var v = bepo.voiceConnections.first();
     //  console.log(v.dispatcher.end());
       v.dispatcher.end()
-    
+
   }
 
 };
