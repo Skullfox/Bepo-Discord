@@ -1,0 +1,15 @@
+{
+  "name": "Bepo-Discord",
+  "version": "0.1.0",
+  "main": "ele.js",
+  "devDependencies": {
+    "electron": "^1.6.11"
+  },
+  "dependencies": {
+    "discord.js": "^11.1.0",
+    "express": "^4.15.3",
+    "opusscript": "0.0.3",
+    "socket.io": "^2.0.3",
+    "ytdl-core": "^0.14.4"
+  }
+}
