@@ -40,10 +40,22 @@ $( document ).ready(function() {
 
     var channel =  $(this).val();
     $("#c_"+channel).fadeIn();
+    socket.emit('changeChannel', {"channel" : channel});
 
   });
 
+  socket.on('remoteChannelChange', function(obj){
+    console.log("remote channel change");
+    $('#select-channel option[value="'+obj.channel+'"]').attr("selected", "selected");
+    $( "#chat-container div" ).each(function( index ) {
+      $( this ).hide();
+    });
 
+
+    $("#c_"+obj.channel).fadeIn();
+    console.log("open channel " + obj.channel);
+
+  });
 
 
   socket.on('talkStatus', function(obj){
@@ -82,7 +94,15 @@ $( document ).ready(function() {
     var hours = date.getHours();
     var minutes = (date.getMinutes()<10?'0':'') + date.getMinutes();
 
-    $( "#c_" + data.channelID ).append( '<p class="text"><small>'+hours+':'+minutes+' </small><span class="user">'+data.username+'</span> '+ data.message+'</p>').children(':last').hide().fadeIn();
+
+    var regEx = /<(.*?)>/g;
+    var message = data.message;
+    var message = message.replace(regEx,function(x){
+    	var emoji = x.split(":")[2].split(">")[0];
+    	return '<img class="emoji" src="https://cdn.discordapp.com/emojis/'+emoji+'.png">';
+    })
+
+    $( "#c_" + data.channelID ).append( '<p class="text"><small>'+hours+':'+minutes+' </small><span class="user">'+data.username+'</span> '+ message+'</p>').children(':last').hide().fadeIn();
 
   });
 

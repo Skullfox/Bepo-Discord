@@ -20,6 +20,11 @@ module.exports = {
 
       });
 
+      socket.on('changeChannel', function(obj) {
+        socket.broadcast.emit('remoteChannelChange', obj);
+
+      });
+
       socket.on('playMusic', function(obj) {
         console.log(obj);
         _b.playMusic(obj.video);
