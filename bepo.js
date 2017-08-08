@@ -1,56 +1,61 @@
 const Discord = require('discord.js');
-const config = require('./config.json');
-ytdl = require('ytdl-core');
 
-var web = require('./core/web.js');
-var socket = require('./core/socket.js');
+
+const path = require("path")
+const join = path.join;
+
+
+
+global = {};
+global._root = __dirname;
+global._playlist = __dirname + "/playlist";
+global.fs = require('fs');
+global.ytsearch = require('youtube-search');
+global.ytdl = require('ytdl-core');
+global.config = require('./config.json');
+global.utils = {};
+
+
+for (let file of global.fs.readdirSync(join(__dirname, "utils"))){
+    global.utils[file.replace(".js", "")] = require(join(__dirname, "utils", file));
+}
+
+//link https://discordapp.com/oauth2/authorize?client_id=334684328078475267&scope=bot&permissions=104164416
+
 
 /* Settings & other stuff*/
 _root = __dirname;
 _b = require('./core/functions.js');
-beposVoicechannel = null;
 
-
-
-web.start();
-socket.start();
 
 bepo = new Discord.Client();
-bepo.login(config.token);
-
-
+bepo.login(global.config.token);
 
 bepo.on('ready', () => {
+  console.log("---------------------")
   console.log('Aye!');
 });
 
 
-/*
+/* Play Music */
 bepo.on('message', message => {
-  // If the message is "ping"
-  if (message.content === 'ping') {
-    // Send "pong" to the same channel
-    message.channel.send('pong');
+  if (message.content.startsWith('b.play')) {
+
+    const voiceChannel = message.member.voiceChannel;
+    if (!voiceChannel) return message.reply(`Please be in a voice channel first!`);
+
+    var track = global.utils.getTrack(message.guild.id);
+    global.utils.playMusic( track , message );
+
   }
 });
 
-*/
-
 bepo.on('message', message => {
-
-
-  socket.emit({
-    "event" : "message",
-    "data" : {
-      "channelID" : message.channel.id,
-      "message" : message.content,
-      "userID" : message.author.id,
-      "username" : message.author.username,
-      "createdTimestamp" : message.createdTimestamp / 1000
-    }
-  });
-
+  if (message.content.startsWith('b.add')) {
+    global.utils.searchTrack(message);
+  }
 });
+
 
 bepo.on('message', message => {
   if (message.content.startsWith('b.join')) {
@@ -58,17 +63,18 @@ bepo.on('message', message => {
     if (!voiceChannel) return message.reply(`Please be in a voice channel first!`);
 
     voiceChannel.join()
-      .then(connnection => {
-        beposVoicechannel = voiceChannel;
-      });
+      .then(connnection => {});
+
   }
 });
 
 bepo.on('message', message => {
   if (message.content.startsWith('b.stop')) {
-    _b.stopMusic();
+    global.utils.stopMusic(message);
   }
 });
+
+
 
 
 
@@ -77,23 +83,85 @@ bepo.on('message', message => {
   if (message.content.startsWith('b.leave')) {
     const voiceChannel = message.member.voiceChannel;
     if (!voiceChannel) return message.reply(`Please be in a voice channel first!`);
-    beposVoicechannel.leave();
+    voiceChannel.leave();
   }
 });
 
-/* Play Music */
 bepo.on('message', message => {
-  if (message.content.startsWith('b.play')) {
+  if (message.content.startsWith('b.remove')) {
+
+    var args = message.content.split(/\s+/g).slice(1);
+    var index = (args.length > 0)? args[0]  :  0;
+
+    if(index < 0){
+      message.channel.send("invalid negativ number");
+      return false;
+    }
+
+    _b.removeTrack(message,index,true);
+
+  }
+});
 
 
 
-    if(beposVoicechannel == null)
-      return message.reply(`Please be in a voice channel first!`);
+bepo.on('message', message => {
+  if (message.content.startsWith('b.skip')) {
 
-    const args = message.content.split(/\s+/g).slice(1);
 
-    var video = args[0];
-    _b.playMusic(video);
+    const voiceChannel = message.member.voiceChannel;
+    if (!voiceChannel) return message.reply(`Please be in a voice channel first!`);
+
+
+    var connection = bepo.voiceConnections.get(message.guild.id);
+    connection.dispatcher.end();
+    message.channel.send("Skipping song");
+
+    try {
+      var playlist = _b.loadJson(global._playlist + "/" + message.guild.id);
+      var track = playlist.tracks[0];
+    } catch (e) {
+      message.channel.send("Playlist is empty");
+      return false;
+    }
+
+    _b.playMusic( track , message );
+
+  }
+});
+
+bepo.on('message', message => {
+  if (message.content.startsWith('b.plist')) {
+
+    try {
+      var playlist = _b.loadJson(global._playlist + "/" + message.guild.id);
+
+      if(playlist.tracks.length == 0){
+        message.channel.send("Playlist is empty");
+        return false;
+      }
+
+    } catch (e) {
+
+      message.channel.send("Playlist is empty");
+      return false;
+
+
+    }
+
+    console.log( playlist.tracks );
+
+    var list = "";
+    for (var i = 0; i < playlist.tracks.length; i++) {
+        console.log(playlist.tracks[i]);
+
+
+        list+= "["+i+"] " + playlist.tracks[i].title + "\n";
+
+
+    }
+
+    message.channel.send(list);
 
   }
 });
@@ -145,3 +213,27 @@ bepo.on('message', message => {
       });
   }
 });
+
+/* OUTDATED
+bepo.on('message', message => {
+
+
+  socket.emit({
+    "event" : "message",
+    "data" : {
+      "channelID" : message.channel.id,
+      "message" : message.content,
+      "userID" : message.author.id,
+      "username" : message.author.username,
+      "createdTimestamp" : message.createdTimestamp / 1000
+    }
+  });
+
+});
+
+var web = require('./core/web.js');
+var socket = require('./core/socket.js');
+
+web.start();
+socket.start();
+*/
